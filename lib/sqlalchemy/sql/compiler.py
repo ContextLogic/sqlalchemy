@@ -371,7 +371,7 @@ class SQLCompiler(engine.Compiled):
         # name is as what it is.
         if column.table is not None and isinstance(column.table, sql.Alias):
             name = column.name
-        elif column.name == '*':
+        elif column.name == '*' or column.name == 'time':
             name = column.name
         else:
             name = "v['%s']" % column.name
