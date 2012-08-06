@@ -4500,6 +4500,15 @@ class Select(_SelectBase):
         else:
             self._having = None
 
+        # PATCH(chutong): Add lateral view support to sqlalchemy.
+        if 'lateralview' in kwargs:
+            self._lateralview = ' LATERAL VIEW ' + \
+                str(kwargs['lateralview']) + \
+                " exploded_table as exploded_column"
+            del kwargs['lateralview']
+        else:
+            self._lateralview = None
+
         if prefixes:
             self._prefixes = tuple([_literal_as_text(p) for p in prefixes])
 

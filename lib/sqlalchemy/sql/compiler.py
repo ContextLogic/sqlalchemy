@@ -371,7 +371,7 @@ class SQLCompiler(engine.Compiled):
         # name is as what it is.
         if column.table is not None and isinstance(column.table, sql.Alias):
             name = column.name
-        elif column.name == '*' or column.name == 'time':
+        elif column.name == '*' or column.name == 'time' or column.name == 'exploded_column':
             name = column.name
         else:
             name = "v['%s']" % column.name
@@ -850,6 +850,16 @@ class SQLCompiler(engine.Compiled):
             if c is not None
         ]
 
+        # PATCH(chutong): lateral view will not take anything before the exploded column.
+        count = 0
+        for column in inner_columns:
+            if '.exploded_column' in column:
+                break
+            count += 1
+
+        if count < len(inner_columns):
+           inner_columns[count] = inner_columns[count][inner_columns[count].index('.') + 1:]
+
         text = "SELECT "  # we're off to a good start !
 
         if select._hints:
@@ -889,6 +899,10 @@ class SQLCompiler(engine.Compiled):
                                 for f in froms])
         else:
             text += self.default_from()
+
+        # PATCH(chutong): Add lateral view support to sqlalchemy.
+        if select._lateralview is not None:
+            text += select._lateralview
 
         if select._whereclause is not None:
             t = select._whereclause._compiler_dispatch(self, **kwargs)
