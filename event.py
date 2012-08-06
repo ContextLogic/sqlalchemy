@@ -345,3 +345,4 @@ class dispatcher(object):
             return self.dispatch_cls
         obj.__dict__['dispatch'] = disp = self.dispatch_cls(cls)
         return disp
+
