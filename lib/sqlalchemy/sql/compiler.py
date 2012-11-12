@@ -373,7 +373,8 @@ class SQLCompiler(engine.Compiled):
             name = column.name
         elif column.name == '*' or column.name == 'time' or column.name == 'exploded_column':
             name = column.name
-        elif column.name == '_tid' and column.table.name == 'requests':
+        elif (column.name == '_experiment_tags' or column.name == '_tid') and \
+            column.table.name == 'requests':
             name = '`%s`' % column.name
         else:
             name = "v['%s']" % column.name
