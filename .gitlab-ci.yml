@@ -12,12 +12,12 @@ upload_egg:
     - pip install pyOpenSSL ndg-httpsclient pyasn1
     - pip install -U devpi-client
 
-    # make sure there's only 1 "__version__=" line in the __init__.py file
-    - (if [ "$(sed -n "/.*\(version\).*=.*\'.*/p" __init__.py | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' | wc -l)" == "1" ]; then echo "Found the version number"; else echo "Fail"; exit 33; fi);
+    # make sure there's only 1 "__version__=" line in the lib/sqlalchemy/__init__.py file
+    - (if [ "$(sed -n "/.*\(version\).*=.*\'.*/p" lib/sqlalchemy/__init__.py | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/' | wc -l)" == "1" ]; then echo "Found the version number"; else echo "Fail"; exit 33; fi);
     # update version to put custom ContextLogic version
-    - version_origin=$(sed -n "/.*\(version\).*=.*\'.*/p" __init__.py | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
+    - version_origin=$(sed -n "/.*\(version\).*=.*\'.*/p" lib/sqlalchemy/__init__.py | sed 's/^.*[^0-9]\([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/')
     - version_cl="$version_origin+cl$CI_PIPELINE_ID"
-    - sed -i "s/$version_origin/$version_cl/g" __init__.py
+    - sed -i "s/$version_origin/$version_cl/g" lib/sqlalchemy/__init__.py
     - pip install .
     - pip show $CI_PROJECT_NAME
     
